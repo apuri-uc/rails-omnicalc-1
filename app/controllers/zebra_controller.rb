@@ -32,12 +32,19 @@ class ZebraController < ApplicationController
   end
 
   def triangle
-    @apr = params.fetch("apr_number").to_f 
-    @monthly_apr = @apr / 100.0 / 12.0
+    @apr = params.fetch("apr_number").to_f
+  @monthly_rate = @apr / 12.0 / 100.0 # APR should be divided by 100 to convert percentage to decimal
+  
+  @years = params.fetch("years_number").to_f
+  @n = @years * 12.0
+  @principal = params.fetch("principal_number").to_f
 
-    @years = params.fetch("years_number")
+# Correct formula for monthly payment
+@payment = @principal * (@monthly_rate * (1 + @monthly_rate) ** @n) / ((1 + @monthly_rate) ** @n - 1)
 
-    @principal = params.fetch("principal_number")
+@final_apr = @apr.to_fs(:percentage, {:precision => 4})
+@principal_currency = @principal.to_fs(:currency, {:precision => 2})
+@final_payment = @payment.to_fs(:currency, {:precision => 2})
 
     render({ :template => "omnicalc/payment_results" })
   end
