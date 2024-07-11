@@ -32,6 +32,13 @@ class ZebraController < ApplicationController
   end
 
   def triangle
+    @apr = params.fetch("apr_number").to_f 
+    @monthly_apr = @apr / 100.0 / 12.0
+
+    @years = params.fetch("years_number")
+
+    @principal = params.fetch("principal_number")
+
     render({ :template => "omnicalc/payment_results" })
   end
 
@@ -44,7 +51,7 @@ class ZebraController < ApplicationController
 
     @max_random = params.fetch("max_number").to_f
 
-    @random = params.fetch("max_number").to_f
+    @random = rand(@min_random..@max_random)
 
     render({ :template => "omnicalc/random_results" })
   end
